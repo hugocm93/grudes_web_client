@@ -19,7 +19,11 @@ $ npm install
 
 ---
 ## Execução
-
 ```sh
-    npm run dev
+$ npm start
+```
+
+Ou para modo desenvolvimento:
+```sh
+$ npm run dev
 ```
