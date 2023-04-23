@@ -6,7 +6,7 @@ function MenuItem({name, isActive, setActive})
 {
     return (
         <button
-            class={`MenuItem ${isActive ? 'active' : ''}`}
+            className={`MenuItem ${isActive ? 'active' : ''}`}
             onClick={setActive}
         >
         {name}
@@ -17,8 +17,8 @@ function MenuItem({name, isActive, setActive})
 function Sidebar({currentIndex, setCurrentIndex})
 {
     return (
-        <div class="Sidebar">
-            <header class="Logo">
+        <div className="Sidebar">
+            <header className="Logo">
                 <h1> Grudes </h1>
                 <MenuItem
                     name = "Busca"
@@ -43,7 +43,7 @@ function Sidebar({currentIndex, setCurrentIndex})
 function Search()
 {
     return (
-        <div class="Search">
+        <div className="Search">
             <h1> Busca </h1>
         </div>
     );
@@ -52,7 +52,7 @@ function Search()
 function Recipes()
 {
     return (
-        <div class="Recipes">
+        <div className="Recipes">
             <h1> Receitas </h1>
         </div>
     );
@@ -72,9 +72,9 @@ function AddIngredientArea()
     }
 
     return (
-        <div class="AddIngredientArea">
+        <div className="AddIngredientArea">
             <input type = "text" placeholder = "Nome" value = {name} onChange = {onChangeCbk}></input>
-            <button class = "Add" onClick={add_ingredient}> Adicionar </button>
+            <button className = "Add" onClick={add_ingredient}> Adicionar </button>
         </div>
     );
 }
@@ -82,7 +82,7 @@ function AddIngredientArea()
 function Ingredients()
 {
     return (
-        <div class="Ingredients">
+        <div className="Ingredients">
             <h1> Ingredientes </h1>
             <AddIngredientArea />
         </div>
@@ -104,7 +104,7 @@ function App()
     const [currentIndex, setCurrentIndex] = useState(0);
 
     return (
-        <div class="App">
+        <div className="App">
             <Sidebar currentIndex = {currentIndex} setCurrentIndex = {setCurrentIndex}/>
             <FormArea currentIndex = {currentIndex}/>
         </div>
