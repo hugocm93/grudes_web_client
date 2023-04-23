@@ -1,0 +1,50 @@
+.App {
+    text-align: center;
+}
+
+.Sidebar {
+    height: 100%;
+    width: 400px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding-top: 40px;
+    background-color: lightyellow;
+}
+
+.FormArea {
+    height: 100%;
+    width: 100%; 
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding-top: 40px;
+    background-color: lightyellow;
+    margin-left: 400px;
+}
+
+.MenuItem {
+    background-color: lightyellow; 
+    width: 400px;
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+}
+
+.MenuItem:hover {
+    background-color: lightgray;
+}
+
+.MenuItem.active {
+    background-color: orange;
+    color: white;
+}
+
+.Ingredients {
+    text-align: left;
+    margin-left: 400px;
+}
