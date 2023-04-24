@@ -1,6 +1,30 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+let url = "http://127.0.0.1:5001"
+
+function List({ items, removeCbk }) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((row, index) => (
+          <tr key={row.id}>
+            <td><input type="text" placeholder="Nome" onChange = {(event) => {row.name = event.target.value;}}></input></td>
+            <button className = "RemoveSubstituteBtn" onClick = {() => {removeCbk(row.id)}}> X </button>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
 function MenuItem({name, isActive, setActive})
 {
@@ -61,20 +85,51 @@ function Recipes()
 function AddIngredientArea()
 {
     const [name, setName] = useState("");
+    const [substitutes, setSubstitutes] = useState([]);
 
     function onChangeCbk(event) {
         setName(event.target.value);
     }
 
-    function add_ingredient()
+    async function save_ingredient()
     {
-        console.log(name);
+        const formData = new FormData();
+        formData.append("name", name);
+
+        const substitutes = [];
+        substitutes.forEach((substitute, index) => {
+            formData.append(`substitutes[${index}]`, substitute);
+        });
+
+        fetch(url + "/ingredient",
+        {
+            method: "post",
+            body: formData
+        })
+        .then((response) => response.json())
+        .then((data) => {console.log("OK: " + data.name)})
+        .catch((error) => {console.error("Error:", error)});
     }
+
+    function add_substitute_item() {
+        const newSubstitute = {
+            name: "ingrediente substituto",
+            id: uuidv4()
+        };
+
+        const newSubstitutes = [...substitutes, newSubstitute];
+        setSubstitutes(newSubstitutes);
+    }
+
+    function remove_substitute(id)
+    { setSubstitutes(substitutes.filter((s) => { console.log(s.name); return s.id !== id; })); }
 
     return (
         <div className="AddIngredientArea">
             <input type = "text" placeholder = "Nome" value = {name} onChange = {onChangeCbk}></input>
-            <button className = "Add" onClick={add_ingredient}> Adicionar </button>
+            <button className = "Save" onClick={save_ingredient}> Salvar </button>
+            <button className = "AddSubstituteBtn" onClick = {add_substitute_item}> Adicionar </button>
+            <List items = {substitutes} removeCbk = {remove_substitute}/>
         </div>
     );
 }
