@@ -5,6 +5,24 @@ import { v4 as uuidv4 } from 'uuid';
 
 let url = "http://127.0.0.1:5001"
 
+function to_form_data(obj)
+{
+    const formData = new FormData();
+
+    Object.entries(obj).forEach(([key, value]) =>
+    {
+        if (Array.isArray(value))
+        {
+            value.forEach((val) => { formData.append(key, val); });
+        } else
+        {
+            formData.append(key, value);
+        }
+    });
+
+    return formData;
+}
+
 function List({ items, removeCbk }) {
   return (
     <table>
@@ -17,7 +35,11 @@ function List({ items, removeCbk }) {
       <tbody>
         {items.map((row, index) => (
           <tr key={row.id}>
-            <td><input type="text" placeholder="Nome" onChange = {(event) => {row.name = event.target.value;}}></input></td>
+            <td><input
+                type="text"
+                placeholder="Nome"
+                onChange = {(event) => {row.name = event.target.value;}}>
+            </input></td>
             <button className = "RemoveSubstituteBtn" onClick = {() => {removeCbk(row.id)}}> X </button>
           </tr>
         ))}
@@ -93,21 +115,18 @@ function AddIngredientArea()
 
     async function save_ingredient()
     {
-        const formData = new FormData();
-        formData.append("name", name);
-
-        const substitutes = [];
-        substitutes.forEach((substitute, index) => {
-            formData.append(`substitutes[${index}]`, substitute);
-        });
+        const ingredient = {
+            name: name,
+            substitutes: substitutes.map(substitute => substitute.name)
+        };
 
         fetch(url + "/ingredient",
         {
             method: "post",
-            body: formData
+            body: to_form_data(ingredient)
         })
         .then((response) => response.json())
-        .then((data) => {console.log("OK: " + data.name)})
+        .then((data) => {console.log(data)})
         .catch((error) => {console.error("Error:", error)});
     }
 
