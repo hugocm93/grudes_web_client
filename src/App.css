@@ -45,7 +45,9 @@
     color: white;
 }
 
-.Ingredients {
+.Recipes,
+.Ingredients
+{
     text-align: left;
     margin-left: 400px;
 }
