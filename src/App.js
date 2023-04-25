@@ -188,8 +188,11 @@ function RecipesArea()
     async function save_recipe()
     {
         const recipe = {
-            name: name
-            //ingredients: ingredients.map(substitute => substitute.name)
+            name: name,
+            instructions: instructions,
+            ingredients: ingredients.map((ingredient) => (ingredient.name)),
+            quantities: ingredients.map((ingredient) => (ingredient.quantity)),
+            units: ingredients.map((ingredient) => (ingredient.unit))
         };
 
         fetch(url + "/recipe",
