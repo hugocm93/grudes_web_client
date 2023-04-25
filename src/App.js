@@ -23,9 +23,9 @@ function to_form_data(obj)
     return formData;
 }
 
-function Table({ columns, rows}) {
+function Table({ columns, rows, onClick}) {
   return (
-    <table>
+    <table onClick = {onClick}>
       <thead>
         <tr>
         {columns.map((column) => (<th>{column.name}</th>))}
@@ -80,19 +80,86 @@ function Sidebar({currentIndex, setCurrentIndex})
     );
 }
 
-function Search()
+function RecipeList({recipes, selectRecipe})
 {
+    const columns = [
+        {
+            name: "Receita",
+            get: (row) => {
+                return (
+                    <label> {row.name} </label>
+                );
+            }
+        }
+    ];
+
+    function table_clicked(event)
+    { selectRecipe(event.target.textContent.trim()); }
+
     return (
-        <div className="Search">
-            <h1> Busca </h1>
+        <div className="RecipeList">
+            <Table columns = {columns} rows = {recipes} onClick = {table_clicked}/>
         </div>
     );
 }
 
-function Recipes()
+function ingredient_to_string(ingredient)
+{
+    return "" + ingredient.quantity + " " + ingredient.unit + " - " + ingredient.ingredient;
+}
+
+function RecipeDisplay({selected, find_recipe})
+{
+    const recipe = find_recipe(selected);
+
+    return (
+        <div className="RecipeDisplay">
+            <div>
+                <label>Ingredientes:</label>
+                {}
+                <p>{recipe ? recipe.ingredients.map(ingredient_to_string).join("\n") : ""}</p>
+            </div>
+            <div>
+                <label>Preparo:</label>
+                <p>{recipe ? recipe.instructions : ""}</p>
+            </div>
+        </div>
+    );
+}
+
+function SearchTab()
+{
+    const [recipes, setRecipes] = useState([]);
+    const [selected, setSelected] = useState("");
+
+    async function get_recipes()
+    {
+        fetch(url + "/recipes",
+        {
+            method: "get"
+        })
+        .then((response) => response.json())
+        .then((data) => { setRecipes(data.recipes); })
+        .catch((error) => {console.error("Error:", error)});
+    }
+
+    function get_selected_recipe(name)
+    { return recipes.find((recipe) => (recipe.name == name)); }
+
+    return (
+        <div className="SearchTab">
+            <h1> {selected} </h1>
+            <RecipeList recipes = {recipes} selectRecipe = {setSelected}/>
+            <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
+            <button className = "SearchBtn" onClick = {get_recipes} > Buscar </button>
+        </div>
+    );
+}
+
+function RecipesTab()
 {
     return (
-        <div className="Recipes">
+        <div className="RecipesTab">
             <h1> Receitas </h1>
             <RecipesArea />
         </div>
@@ -136,7 +203,7 @@ function IngredientArea()
     }
 
     function remove_substitute(id)
-    { setSubstitutes(substitutes.filter((s) => { console.log(s.name); return s.id !== id; })); }
+    { setSubstitutes(substitutes.filter((s) => { return s.id !== id; })); }
 
     const columns = [
         {
@@ -218,7 +285,7 @@ function RecipesArea()
     }
 
     function remove_ingredient(id)
-    { setIngredients(ingredients.filter((s) => { console.log(s.name); return s.id !== id; })); }
+    { setIngredients(ingredients.filter((s) => { return s.id !== id; })); }
 
     const columns = [
         {
@@ -278,10 +345,10 @@ function RecipesArea()
     );
 }
 
-function Ingredients()
+function IngredientsTab()
 {
     return (
-        <div className="Ingredients">
+        <div className="IngredientsTab">
             <h1> Ingredientes </h1>
             <IngredientArea />
         </div>
@@ -291,11 +358,11 @@ function Ingredients()
 function FormArea({currentIndex})
 {
     if(currentIndex === 0)
-        return (<Search />);
+        return (<SearchTab />);
     else if (currentIndex === 1)
-        return (<Recipes />);
+        return (<RecipesTab />);
     else if (currentIndex === 2)
-        return (<Ingredients />);
+        return (<IngredientsTab />);
 }
 
 function App()

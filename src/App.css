@@ -1,5 +1,6 @@
 .App {
     text-align: center;
+    white-space: pre-wrap;
 }
 
 .Sidebar {
@@ -45,8 +46,9 @@
     color: white;
 }
 
-.Recipes,
-.Ingredients
+.SearchTab,
+.RecipesTab,
+.IngredientsTab
 {
     text-align: left;
     margin-left: 400px;
