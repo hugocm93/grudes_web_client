@@ -27,14 +27,14 @@ function Table({ columns, rows, onClick}) {
   return (
     <table onClick = {onClick}>
       <thead>
-        <tr>
-        {columns.map((column) => (<th>{column.name}</th>))}
+        <tr key = "1">
+        {columns.map((column) => (<th key={column.name} >{column.name}</th>))}
         </tr>
       </thead>
       <tbody>
         {rows.map((row) => (
           <tr key={row.id}>
-            {columns.map((column) => (<td>{column.get(row)}</td>))}
+            {columns.map((column) => (<td key = {column.name}>{column.get(row)}</td>))}
           </tr>
         ))}
       </tbody>
@@ -103,6 +103,52 @@ function RecipeList({recipes, selectRecipe})
     );
 }
 
+function IngredientsTable({title, ingredients, setIngredients})
+{
+    function add_ingredient_item() {
+        const newIngredient = {
+            name: "ingrediente",
+            id: uuidv4()
+        };
+
+        const newIngredients = [...ingredients, newIngredient];
+        setIngredients(newIngredients);
+    }
+
+    function remove_ingredient(id)
+    { setIngredients(ingredients.filter((s) => { return s.id !== id; })); }
+
+    const columns = [
+        {
+            name: title,
+            get: (row) => {
+                return (
+                    <input
+                        type="text"
+                        placeholder="Nome"
+                        onChange = {(event) => {row.name = event.target.value;}}>
+                    </input>
+                );
+            }
+        },
+        {
+            name: "X",
+            get: (row) => {
+                return (
+                    <button className = "RemoveIngredientBtn" onClick = {() => {remove_ingredient(row.id)}}> X </button>
+                );
+            }
+        }
+    ];
+
+    return (
+        <div className="IngredientsTable">
+            <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> Adicionar </button>
+            <Table columns = {columns} rows = {ingredients} />
+        </div>
+    );
+}
+
 function ingredient_to_string(ingredient)
 {
     return "" + ingredient.quantity + " " + ingredient.unit + " - " + ingredient.ingredient;
@@ -131,15 +177,27 @@ function SearchTab()
 {
     const [recipes, setRecipes] = useState([]);
     const [selected, setSelected] = useState("");
+    const [ingredients, setIngredients] = useState([]);
 
     async function get_recipes()
     {
-        fetch(url + "/recipes",
+        var url_ = url + "/recipes";
+
+        url_ = url_ + `?${new URLSearchParams({name: ""}).toString()}`;
+
+        ingredients.forEach((ingredient) => {
+            if(ingredient.name.length !== 0 )
+                url_ = url_ + `&${new URLSearchParams({ingredients: ingredient.name}).toString()}`
+        });
+
+        console.log(url_);
+
+        fetch(url_,
         {
-            method: "get"
+            method: "get",
         })
         .then((response) => response.json())
-        .then((data) => { setRecipes(data.recipes); })
+        .then((data) => { console.log(data.recipes) ; setRecipes(data.recipes); })
         .catch((error) => {console.error("Error:", error)});
     }
 
@@ -149,8 +207,11 @@ function SearchTab()
     return (
         <div className="SearchTab">
             <h1> {selected} </h1>
-            <RecipeList recipes = {recipes} selectRecipe = {setSelected}/>
-            <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
+            <div className = "RecipeRow">
+                <IngredientsTable title = "Ingredientes" ingredients = {ingredients} setIngredients = {setIngredients}/>
+                <RecipeList recipes = {recipes} selectRecipe = {setSelected}/>
+                <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
+            </div>
             <button className = "SearchBtn" onClick = {get_recipes} > Buscar </button>
         </div>
     );
@@ -232,8 +293,7 @@ function IngredientArea()
         <div className="IngredientArea">
             <input type = "text" placeholder = "Nome" value = {name} onChange = {onChangeCbk}></input>
             <button className = "Save" onClick={save_ingredient}> Salvar </button>
-            <button className = "AddSubstituteBtn" onClick = {add_substitute_item}> Adicionar </button>
-            <Table columns = {columns} rows = {substitutes} />
+            <IngredientsTable title = "Substitutos" ingredients = {substitutes} setIngredients = {setSubstitutes}/>
         </div>
     );
 }
@@ -242,7 +302,7 @@ function RecipesArea()
 {
     const [name, setName] = useState("");
     const [ingredients, setIngredients] = useState([]);
-    const [instructions, setInstructions] = useState([]);
+    const [instructions, setInstructions] = useState("");
 
     function onNameChangeCbk(event) {
         setName(event.target.value);

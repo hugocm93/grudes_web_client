@@ -53,3 +53,8 @@
     text-align: left;
     margin-left: 400px;
 }
+
+.RecipeRow
+{
+    display: flex;
+}
