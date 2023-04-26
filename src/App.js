@@ -197,7 +197,16 @@ function SearchTab()
             method: "get",
         })
         .then((response) => response.json())
-        .then((data) => { console.log(data.recipes) ; setRecipes(data.recipes); })
+        .then((data) => {
+            console.log(data.recipes);
+            if(data.recipes)
+            {
+                data.recipes.forEach((recipe) => { recipe.id = uuidv4(); });
+                setRecipes(data.recipes);
+            }
+            else
+                setRecipes([]);
+        })
         .catch((error) => {console.error("Error:", error)});
     }
 
