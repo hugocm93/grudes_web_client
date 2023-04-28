@@ -111,29 +111,6 @@ function Sidebar({currentIndex, setCurrentIndex})
     );
 }
 
-function RecipeList({recipes, selectRecipe})
-{
-    const columns = [
-        {
-            name: "Receita",
-            get: (row) => {
-                return (
-                    <label> {row.name} </label>
-                );
-            }
-        }
-    ];
-
-    function table_clicked(event)
-    { selectRecipe(event.target.textContent.trim()); }
-
-    return (
-        <div className="RecipeList">
-            <Table columns = {columns} rows = {recipes} onClick = {table_clicked}/>
-        </div>
-    );
-}
-
 function IngredientsTable({title, ingredients, setIngredients})
 {
     function add_ingredient_item() {
@@ -221,7 +198,7 @@ function SearchTab()
             <h1> {selected} </h1>
             <div className = "Row">
                 <IngredientsTable title = "Ingredientes" ingredients = {ingredients} setIngredients = {setIngredients}/>
-                <RecipeList recipes = {recipes} selectRecipe = {setSelected}/>
+                <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {setSelected}/>
                 <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
             </div>
             <button className = "SearchBtn" onClick = {get_recipes} > Buscar </button>
@@ -326,7 +303,7 @@ function IngredientArea()
     );
 }
 
-function RecipesTable({recipes, setRecipes})
+function RecipesTable({recipes, setRecipes, selectRecipe})
 {
     function remove_recipe(id)
     {
@@ -369,9 +346,12 @@ function RecipesTable({recipes, setRecipes})
         }
     ];
 
+    function table_clicked(event)
+    { selectRecipe(event.target.textContent.trim()); }
+
     return (
         <div>
-            <Table columns = {columns} rows = {recipes} />
+            <Table columns = {columns} rows = {recipes} onClick = {table_clicked}/>
         </div>
     );
 }
@@ -488,7 +468,7 @@ function RecipesArea()
         <div>
             <div>
                 <div>
-                    <RecipesTable recipes = {recipes} setRecipes = {setRecipes}/>
+                    <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = { (name) => {} } />
                 </div>
                 <div>
                     <input type = "text" placeholder = "Nome" value = {name} onChange = {onNameChangeCbk}></input>
