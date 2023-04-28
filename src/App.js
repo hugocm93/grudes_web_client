@@ -23,11 +23,11 @@ function to_form_data(obj)
     return formData;
 }
 
-async function get_recipes_impl(ingredients, setRecipes)
+async function get_recipes_impl(name, ingredients, setRecipes)
 {
     var url_ = url + "/recipes";
 
-    url_ = url_ + `?${new URLSearchParams({name: ""}).toString()}`;
+    url_ = url_ + `?${new URLSearchParams({name: name}).toString()}`;
 
     ingredients.forEach((ingredient) => {
         if(ingredient.name.length !== 0 )
@@ -52,6 +52,10 @@ async function get_recipes_impl(ingredients, setRecipes)
             setRecipes([]);
     })
     .catch((error) => {console.error("Error:", error)});
+}
+
+function bind(setName) {
+    return (event) => { setName(event.target.value); }
 }
 
 function Table({ columns, rows, onClick}) {
@@ -150,9 +154,9 @@ function IngredientsTable({title, ingredients, setIngredients})
     ];
 
     return (
-        <div className="IngredientsTable">
-            <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> Adicionar </button>
+        <div className="Row">
             <Table columns = {columns} rows = {ingredients} />
+            <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> Adicionar </button>
         </div>
     );
 }
@@ -183,12 +187,13 @@ function RecipeDisplay({selected, find_recipe})
 
 function SearchTab()
 {
+    const [name, setName] = useState("");
     const [recipes, setRecipes] = useState([]);
     const [selected, setSelected] = useState("");
     const [ingredients, setIngredients] = useState([]);
 
     function get_recipes()
-    { get_recipes_impl(ingredients, setRecipes); }
+    { get_recipes_impl(name.toLowerCase().trim(), ingredients, setRecipes); }
 
     function get_selected_recipe(name)
     { return recipes.find((recipe) => (recipe.name == name)); }
@@ -197,6 +202,7 @@ function SearchTab()
         <div className="SearchTab">
             <h1> {selected} </h1>
             <div className = "Row">
+                <input type = "text" placeholder = "Nome" value = {name} onChange = {bind(setName)}></input>
                 <IngredientsTable title = "Ingredientes" ingredients = {ingredients} setIngredients = {setIngredients}/>
                 <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {setSelected}/>
                 <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
@@ -296,9 +302,11 @@ function IngredientArea()
 
     return (
         <div className="IngredientArea">
-            <input type = "text" placeholder = "Nome" value = {name} onChange = {onChangeCbk}></input>
-            <button className = "Save" onClick={save_ingredient}> Salvar </button>
-            <IngredientsTable title = "Substitutos" ingredients = {substitutes} setIngredients = {setSubstitutes}/>
+            <div>
+                <input type = "text" placeholder = "Nome" value = {name} onChange = {onChangeCbk}></input>
+                <IngredientsTable title = "Substitutos" ingredients = {substitutes} setIngredients = {setSubstitutes}/>
+            </div>
+            <button className = "SaveIngredientBtn" onClick={save_ingredient}> Salvar </button>
         </div>
     );
 }
@@ -364,7 +372,7 @@ function RecipesArea()
     const [recipes, setRecipes] = useState([]);
 
     useEffect(() => {
-        get_recipes_impl(ingredients, setRecipes);
+        get_recipes_impl("", ingredients, setRecipes);
     }, []);
 
     function onNameChangeCbk(event) {
@@ -393,7 +401,7 @@ function RecipesArea()
         .then((response) => response.json())
         .then((data) => {
             console.log(data)
-            get_recipes_impl(ingredients, setRecipes);
+            get_recipes_impl("", ingredients, setRecipes);
 
             setName("");
             setIngredients([]);
@@ -464,11 +472,15 @@ function RecipesArea()
         }
     ];
 
+    function show_recipe(name)
+    {
+    }
+
     return (
         <div>
             <div>
                 <div>
-                    <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = { (name) => {} } />
+                    <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {show_recipe} />
                 </div>
                 <div>
                     <input type = "text" placeholder = "Nome" value = {name} onChange = {onNameChangeCbk}></input>

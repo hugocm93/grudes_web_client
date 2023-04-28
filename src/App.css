@@ -59,6 +59,8 @@
     display: flex;
 }
 
+
+.SaveIngredientBtn,
 .AddIngredientBtn
 {
     height: 20px;
