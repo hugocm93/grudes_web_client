@@ -248,7 +248,7 @@ function IngredientsArea()
         get_ingredients_impl().then((ingredients) => (setIngredients(ingredients)));
     }, []);
 
-    async function save_ingredient()
+    async function add_ingredient()
     {
         const ingredient = {
             name: name,
@@ -357,7 +357,7 @@ function IngredientsArea()
                 <input type = "text" placeholder = "Nome" value = {name} onChange = {bind(setName)}></input>
                 <IngredientsTable title = "Substitutos" ingredients = {substitutes} setIngredients = {setSubstitutes}/>
             </div>
-            <button className = "SaveIngredientBtn" onClick={save_ingredient}> Salvar </button>
+            <button className = "AddIngredientBtn" onClick={add_ingredient}> Cadastrar </button>
         </div>
     );
 }
@@ -423,7 +423,7 @@ function RecipesArea()
         get_recipes_impl("", [], setRecipes);
     }, []);
 
-    async function save_recipe()
+    async function add_recipe()
     {
         const recipe = {
             name: name,
@@ -562,7 +562,7 @@ function RecipesArea()
                 </div>
 
             </div>
-            <button className = "Save" onClick={save_recipe}> Salvar </button>
+            <button className = "Add" onClick={add_recipe}> Cadastrar </button>
         </div>
     );
 }
