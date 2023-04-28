@@ -36,7 +36,7 @@ async function get_recipes_impl(name, ingredients, setRecipes)
 
     console.log(url_);
 
-    fetch(url_,
+    return fetch(url_,
     {
         method: "get",
     })
@@ -398,14 +398,22 @@ function RecipesArea()
             method: "post",
             body: to_form_data(recipe)
         })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data)
-            get_recipes_impl("", ingredients, setRecipes);
+        .then((response) => {
+            return response.json().then((json) => { return {status: response.status, json: json}; });
+        })
+        .then((response) => {
+            if(response.status !== 200)
+            {
+                window.alert("Erro: " + response.json.message);
+            }
+            else
+            {
+                get_recipes_impl("", ingredients, setRecipes);
 
-            setName("");
-            setIngredients([]);
-            setInstructions([]);
+                setName("");
+                setIngredients([]);
+                setInstructions([]);
+            }
         })
         .catch((error) => {console.error("Error:", error)});
     }
@@ -433,6 +441,7 @@ function RecipesArea()
                     <input
                         type="text"
                         placeholder="Nome"
+                        value = {row.name}
                         onChange = {(event) => {row.name = event.target.value;}}>
                     </input>
                 );
@@ -445,6 +454,7 @@ function RecipesArea()
                     <input
                         type = "number"
                         min = {0}
+                        value = {row.quantity}
                         onChange = {(event) => {row.quantity = event.target.value;}}>
                     </input>
                 );
@@ -457,6 +467,7 @@ function RecipesArea()
                     <input
                         type = "text"
                         placeholder = "xícara"
+                        value = {row.unit}
                         onChange = {(event) => {row.unit = event.target.value;}}>
                     </input>
                 );
@@ -474,6 +485,25 @@ function RecipesArea()
 
     function show_recipe(name)
     {
+        var recipe;
+        get_recipes_impl(name, [], (recipes) =>
+        {
+            if(recipes.length !== 0)
+                recipe = recipes.at(0);
+        }).then(() => {
+            if(recipe)
+            {
+                setName(recipe.name);
+                setInstructions(recipe.instructions);
+
+                recipe.ingredients.forEach((ingredient) => {
+                    ingredient.name = ingredient.ingredient;
+                    ingredient.id = uuidv4();
+                    console.log(ingredient);
+                });
+                setIngredients(recipe.ingredients);
+            }
+        });
     }
 
     return (
