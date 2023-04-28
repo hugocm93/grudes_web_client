@@ -420,7 +420,7 @@ function RecipesArea()
     const [recipes, setRecipes] = useState([]);
 
     useEffect(() => {
-        get_recipes_impl("", ingredients, setRecipes);
+        get_recipes_impl("", [], setRecipes);
     }, []);
 
     async function save_recipe()
@@ -448,11 +448,11 @@ function RecipesArea()
             }
             else
             {
-                get_recipes_impl("", ingredients, setRecipes);
-
                 setName("");
                 setIngredients([]);
                 setInstructions([]);
+
+                get_recipes_impl("", [], setRecipes);
             }
         })
         .catch((error) => {console.error("Error:", error)});
