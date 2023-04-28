@@ -153,8 +153,7 @@ function IngredientsTable({title, ingredients, setIngredients})
                 return (
                     <input
                         type="text"
-                        placeholder="Nome"
-                        value = {row.name}
+                        placeholder={row.name}
                         onChange = {(event) => {row.name = event.target.value;}}>
                     </input>
                 );
@@ -275,6 +274,7 @@ function IngredientsArea()
             {
                 setName("");
                 setSubstitutes([]);
+                get_ingredients_impl().then((ingredients) => (setIngredients(ingredients)));
             }
         })
         .catch((error) => {
@@ -480,8 +480,7 @@ function RecipesArea()
                 return (
                     <input
                         type="text"
-                        placeholder="Nome"
-                        value = {row.name}
+                        placeholder={row.name}
                         onChange = {(event) => {row.name = event.target.value;}}>
                     </input>
                 );
@@ -494,7 +493,7 @@ function RecipesArea()
                     <input
                         type = "number"
                         min = {0}
-                        value = {row.quantity}
+                        placeholder={row.quantity}
                         onChange = {(event) => {row.quantity = event.target.value;}}>
                     </input>
                 );
@@ -506,8 +505,7 @@ function RecipesArea()
                 return (
                     <input
                         type = "text"
-                        placeholder = "xícara"
-                        value = {row.unit}
+                        placeholder = {row.unit}
                         onChange = {(event) => {row.unit = event.target.value;}}>
                     </input>
                 );
