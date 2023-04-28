@@ -1,6 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
+import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 let url = "http://127.0.0.1:5001"
@@ -21,6 +21,37 @@ function to_form_data(obj)
     });
 
     return formData;
+}
+
+async function get_recipes_impl(ingredients, setRecipes)
+{
+    var url_ = url + "/recipes";
+
+    url_ = url_ + `?${new URLSearchParams({name: ""}).toString()}`;
+
+    ingredients.forEach((ingredient) => {
+        if(ingredient.name.length !== 0 )
+            url_ = url_ + `&${new URLSearchParams({ingredients: ingredient.name}).toString()}`
+    });
+
+    console.log(url_);
+
+    fetch(url_,
+    {
+        method: "get",
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data.recipes);
+        if(data.recipes)
+        {
+            data.recipes.forEach((recipe) => { recipe.id = uuidv4(); });
+            setRecipes(data.recipes);
+        }
+        else
+            setRecipes([]);
+    })
+    .catch((error) => {console.error("Error:", error)});
 }
 
 function Table({ columns, rows, onClick}) {
@@ -179,36 +210,8 @@ function SearchTab()
     const [selected, setSelected] = useState("");
     const [ingredients, setIngredients] = useState([]);
 
-    async function get_recipes()
-    {
-        var url_ = url + "/recipes";
-
-        url_ = url_ + `?${new URLSearchParams({name: ""}).toString()}`;
-
-        ingredients.forEach((ingredient) => {
-            if(ingredient.name.length !== 0 )
-                url_ = url_ + `&${new URLSearchParams({ingredients: ingredient.name}).toString()}`
-        });
-
-        console.log(url_);
-
-        fetch(url_,
-        {
-            method: "get",
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data.recipes);
-            if(data.recipes)
-            {
-                data.recipes.forEach((recipe) => { recipe.id = uuidv4(); });
-                setRecipes(data.recipes);
-            }
-            else
-                setRecipes([]);
-        })
-        .catch((error) => {console.error("Error:", error)});
-    }
+    function get_recipes()
+    { get_recipes_impl(ingredients, setRecipes); }
 
     function get_selected_recipe(name)
     { return recipes.find((recipe) => (recipe.name == name)); }
@@ -216,7 +219,7 @@ function SearchTab()
     return (
         <div className="SearchTab">
             <h1> {selected} </h1>
-            <div className = "RecipeRow">
+            <div className = "Row">
                 <IngredientsTable title = "Ingredientes" ingredients = {ingredients} setIngredients = {setIngredients}/>
                 <RecipeList recipes = {recipes} selectRecipe = {setSelected}/>
                 <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
@@ -257,9 +260,25 @@ function IngredientArea()
             method: "post",
             body: to_form_data(ingredient)
         })
-        .then((response) => response.json())
-        .then((data) => {console.log(data)})
-        .catch((error) => {console.error("Error:", error)});
+        .then((response) => {
+            return response.json().then((json) => { return {status: response.status, json: json}; });
+        })
+        .then((response) => {
+            console.log(response.status);
+            if(response.status !== 200)
+            {
+                console.log(response.json);
+                window.alert("Erro: " + response.json.message);
+            }
+            else
+            {
+                setName("");
+                setSubstitutes([]);
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error)
+        });
     }
 
     function add_substitute_item() {
@@ -307,11 +326,66 @@ function IngredientArea()
     );
 }
 
+function RecipesTable({recipes, setRecipes})
+{
+    function remove_recipe(id)
+    {
+        const idx = recipes.findIndex((s) => { return s.id === id; });
+        const found = recipes.at(idx);
+
+        console.log(found.name);
+
+        if(!window.confirm("Deseja realmente remover a receita " + found.name + "?"))
+            return;
+
+        fetch(url + "/recipe" + `?${new URLSearchParams({name: found.name}).toString()}`,
+        {
+            method: "delete",
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            setRecipes(recipes.toSpliced(idx, 1)); 
+        })
+        .catch((error) => {console.error("Error:", error)});
+    }
+
+    const columns = [
+        {
+            name: "Receita",
+            get: (row) => {
+                return (
+                    <label> {row.name} </label>
+                );
+            }
+        },
+        {
+            name: "X",
+            get: (row) => {
+                return (
+                    <button className = "RemoveRecipeBtn" onClick = {() => {remove_recipe(row.id)}}> X </button>
+                );
+            }
+        }
+    ];
+
+    return (
+        <div>
+            <Table columns = {columns} rows = {recipes} />
+        </div>
+    );
+}
+
 function RecipesArea()
 {
     const [name, setName] = useState("");
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState("");
+    const [recipes, setRecipes] = useState([]);
+
+    useEffect(() => {
+        get_recipes_impl(ingredients, setRecipes);
+    }, []);
 
     function onNameChangeCbk(event) {
         setName(event.target.value);
@@ -337,7 +411,14 @@ function RecipesArea()
             body: to_form_data(recipe)
         })
         .then((response) => response.json())
-        .then((data) => {console.log(data)})
+        .then((data) => {
+            console.log(data)
+            get_recipes_impl(ingredients, setRecipes);
+
+            setName("");
+            setIngredients([]);
+            setInstructions([]);
+        })
         .catch((error) => {console.error("Error:", error)});
     }
 
@@ -404,12 +485,25 @@ function RecipesArea()
     ];
 
     return (
-        <div className="RecipeArea">
-            <input type = "text" placeholder = "Nome" value = {name} onChange = {onNameChangeCbk}></input>
-            <input type = "text" placeholder = "Instruções" value = {instructions} onChange = {onInstructionsChangeCbk}></input>
+        <div>
+            <div>
+                <div>
+                    <RecipesTable recipes = {recipes} setRecipes = {setRecipes}/>
+                </div>
+                <div>
+                    <input type = "text" placeholder = "Nome" value = {name} onChange = {onNameChangeCbk}></input>
+                </div>
+                <div>
+                    <input type = "text" placeholder = "Instruções" value = {instructions} onChange = {onInstructionsChangeCbk}></input>
+                </div>
+
+                <div className = "Row">
+                    <Table columns = {columns} rows = {ingredients} />
+                    <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> Adicionar </button>
+                </div>
+
+            </div>
             <button className = "Save" onClick={save_recipe}> Salvar </button>
-            <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> Adicionar </button>
-            <Table columns = {columns} rows = {ingredients} />
         </div>
     );
 }

@@ -54,7 +54,13 @@
     margin-left: 400px;
 }
 
-.RecipeRow
+.Row
 {
     display: flex;
+}
+
+.AddIngredientBtn
+{
+    height: 20px;
+    width: 70px; 
 }
