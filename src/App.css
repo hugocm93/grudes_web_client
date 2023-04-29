@@ -1,3 +1,14 @@
+*{
+    #border-style: solid;
+    font-family: "Great Vibes";
+    font-size: 20px;
+}
+
+body
+{
+    background-color: #FF905C;
+}
+
 .App {
     text-align: center;
     white-space: pre-wrap;
@@ -9,7 +20,7 @@
     position: fixed;
     left: 0;
     top: 0;
-    padding-top: 40px;
+    padding-top: 10px;
     background-color: lightyellow;
 }
 
@@ -26,23 +37,26 @@
 
 .MenuItem {
     background-color: lightyellow; 
-    width: 400px;
+    width: 300px;
     border: none;
     color: black;
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 20px;
+    font-size: 25px;
+    font-family: "Great Vibes";
     text-align: right;
+    border-radius: 44px 0px 0px 44px; 
+    margin-left: 100px;
 }
 
 .MenuItem:hover {
-    background-color: lightgray;
+    background-color: #FFFABB;
 }
 
 .MenuItem.active {
-    background-color: orange;
+    background-color: #E86348;
     color: white;
 }
 
@@ -59,9 +73,26 @@
     display: flex;
 }
 
-
 .AddIngredientBtn
 {
     height: 20px;
     width: 80px; 
+}
+
+#Logo img
+{
+    height: 50%;;
+    width: 50%; 
+}
+
+#MainTitle
+{
+    color: #FF351C;
+    font-family: "Great Vibes", cursive;
+    font-size: 50px;
+    font-weight: normal;
+    text-align: center;
+    text-shadow: 0 6px 6px #fff;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 20px 0px;
 }

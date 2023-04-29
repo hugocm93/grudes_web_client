@@ -2,6 +2,7 @@ import './App.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import logo from './logo.png';
 
 let url = "http://127.0.0.1:5001"
 
@@ -109,8 +110,9 @@ function Sidebar({currentIndex, setCurrentIndex})
 {
     return (
         <div className="Sidebar">
-            <header className="Logo">
-                <h1> Grudes </h1>
+            <header id = "Logo" className="Logo">
+                <img src={logo} alt = "Logo"/>
+                <h1 id = "MainTitle"> Grudes </h1>
                 <MenuItem
                     name = "Busca"
                     isActive = {currentIndex === 0}
