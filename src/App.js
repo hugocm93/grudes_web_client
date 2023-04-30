@@ -477,7 +477,7 @@ function RecipesArea()
                 setIngredients([]);
                 setInstructions([]);
 
-                get_recipes_impl("", [], setRecipes);
+                get_recipes_impl("", []).then((recipes) => {setRecipes(recipes); });
             }
         })
         .catch((error) => {console.error("Error:", error)});
