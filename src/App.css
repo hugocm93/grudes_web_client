@@ -22,6 +22,7 @@ body
     top: 0;
     padding-top: 10px;
     background-color: lightyellow;
+    background-image: url("./fruits.png");
 }
 
 .FormArea {
@@ -31,12 +32,12 @@ body
     left: 0;
     top: 0;
     padding-top: 40px;
-    background-color: lightyellow;
     margin-left: 400px;
 }
 
 .MenuItem {
     background-color: lightyellow; 
+    background-image: url("./fruits.png");
     width: 300px;
     border: none;
     color: black;
@@ -49,6 +50,7 @@ body
     text-align: right;
     border-radius: 44px 0px 0px 44px; 
     margin-left: 100px;
+    background-size: 800%;
 }
 
 .MenuItem:hover {
@@ -61,11 +63,16 @@ body
 }
 
 #SearchTab,
-.RecipesTab,
+#RecipesTab,
 .IngredientsTab
 {
     margin-left: 430px;
     margin-top: 80px;
+}
+
+#SearchResultDiv
+{
+    margin-top: 60px;
 }
 
 .container { 
@@ -93,7 +100,7 @@ body
 .center {
   border: none;
   margin: auto;
-  width: 50%;
+  width: 60%;
   padding: 10px;
 }
 
@@ -108,7 +115,7 @@ body
     width: 400px;
 }
 
-#AddIngredientBtn:hover
+.AddIngredientBtn:hover
 {
     border: outset; 
     border-color: #55C79C;
@@ -135,8 +142,7 @@ body
     border-color: #E86348;
 }
 
-
-#AddIngredientBtn
+.AddIngredientBtn
 {
     height: 35px;
     width: 35px; 
@@ -161,6 +167,7 @@ body
     text-align: center;
 }
 
+#AddIngredientsTable,
 .RecipeDisplay,
 .RecipesTable,
 .IngredientsTable
@@ -209,6 +216,20 @@ thead
     height: 50%;
     width: 50%; 
 }
+
+#Background
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("./fruits.png");
+    background-size: contain;
+    z-index: -1;
+    overflow-y: auto;
+}
+
 
 #MainTitle
 {
@@ -259,8 +280,32 @@ input
     border: outset; 
 }
 
-#RecipeName
+.RecipeName
 {
+    width: 50%; 
     height: 30px;
-    width: 300px; 
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+#InstructionsTextArea
+{
+    text-align: left;
+    padding: 10px;
+    border-radius: 30px 30px 30px 30px; 
+    border-style: none;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#Quantity
+{
+    width: 70%;
+}
+
+#Unit
+{
+    width: 100%;
 }

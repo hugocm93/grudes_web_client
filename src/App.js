@@ -174,7 +174,7 @@ function IngredientsTable({title, ingredients, setIngredients})
     return (
         <div className="IngredientsTable">
             <Table columns = {columns} rows = {ingredients} />
-            <button id = "AddIngredientBtn" onClick = {add_ingredient_item}> + </button>
+            <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> + </button>
         </div>
     );
 }
@@ -229,7 +229,7 @@ function SearchTab()
             <div className = "Row">
                 <div className = "center">
                     <input
-                        id = "RecipeName"
+                        className = "RecipeName"
                         type = "text"
                         placeholder = "  Nome"
                         value = {name}
@@ -246,7 +246,7 @@ function SearchTab()
             <div className = "center">
                 <button id = "SearchBtn" onClick = {get_recipes} > &#x1F50D; </button>
             </div>
-            <div className = "center">
+            <div id = "SearchResultDiv" className = "center">
                 <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {setSelected}/>
                 <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
             </div>
@@ -257,8 +257,7 @@ function SearchTab()
 function RecipesTab()
 {
     return (
-        <div className="RecipesTab">
-            <h1> Receitas </h1>
+        <div id = "RecipesTab">
             <RecipesArea />
         </div>
     );
@@ -383,7 +382,7 @@ function IngredientsArea()
                 <input type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>
                 <IngredientsTable title = "Substitutos" ingredients = {substitutes} setIngredients = {setSubstitutes}/>
             </div>
-            <button className = "AddIngredientBtn" onClick={add_ingredient}> Cadastrar </button>
+            <button className = "Add" onClick={add_ingredient}> Cadastrar </button>
         </div>
     );
 }
@@ -517,9 +516,10 @@ function RecipesArea()
             get: (row) => {
                 return (
                     <input
+                        id = "Quantity"
                         type = "number"
                         min = {0}
-                        placeholder={"  " + row.quantity}
+                        placeholder={row.quantity}
                         onChange = {(event) => {row.quantity = event.target.value;}}>
                     </input>
                 );
@@ -530,8 +530,9 @@ function RecipesArea()
             get: (row) => {
                 return (
                     <input
+                        id = "Unit"
                         type = "text"
-                        placeholder = {"  " + row.unit}
+                        placeholder = {row.unit}
                         onChange = {(event) => {row.unit = event.target.value;}}>
                     </input>
                 );
@@ -571,16 +572,20 @@ function RecipesArea()
 
     return (
         <div>
-            <div>
+            <div className = "center">
                 <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {show_recipe} />
-                <input type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>
-                <input type = "text" placeholder = "  Instruções" value = {instructions} onChange = {bind(setInstructions)}></input>
+                <input className = "RecipeName" type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>
+                <textarea
+                    id = "InstructionsTextArea"
+                    placeholder = "  Instruções"
+                    value = {instructions}
+                    onChange = {bind(setInstructions)}>
+                </textarea>
 
-                <div className = "Row">
+                <div id = "AddIngredientsTable">
                     <Table columns = {columns} rows = {ingredients} />
-                    <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> Adicionar </button>
+                    <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> + </button>
                 </div>
-
             </div>
             <button className = "Add" onClick={add_recipe}> Cadastrar </button>
         </div>
@@ -612,7 +617,7 @@ function App()
     const [currentIndex, setCurrentIndex] = useState(0);
 
     return (
-        <div className="App">
+        <div id = "Background" className="App">
             <Sidebar currentIndex = {currentIndex} setCurrentIndex = {setCurrentIndex}/>
             <FormArea currentIndex = {currentIndex}/>
         </div>
