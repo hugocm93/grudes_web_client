@@ -341,7 +341,7 @@ function IngredientsArea()
 
     const columns = [
         {
-            name: "Ingrediente",
+            name: "Ingredientes",
             get: (row) => { return (<label> {row.name} </label>); }
         },
         {
@@ -376,10 +376,12 @@ function IngredientsArea()
     { show_ingredient(event.target.textContent.trim()); }
 
     return (
-        <div className = "IngredientsArea">
-            <Table columns = {columns} rows = {ingredients} onClick = {table_clicked}/>
+        <div className = "center">
+            <div className = "IngredientsTable">
+                <Table columns = {columns} rows = {ingredients} onClick = {table_clicked}/>
+            </div>
             <div>
-                <input type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>
+                <input className = "IngredientName" type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>
                 <IngredientsTable title = "Substitutos" ingredients = {substitutes} setIngredients = {setSubstitutes}/>
             </div>
             <button className = "Add" onClick={add_ingredient}> Cadastrar </button>
@@ -595,8 +597,7 @@ function RecipesArea()
 function IngredientsTab()
 {
     return (
-        <div className="IngredientsTab">
-            <h1> Ingredientes </h1>
+        <div id = "IngredientsTab">
             <IngredientsArea />
         </div>
     );

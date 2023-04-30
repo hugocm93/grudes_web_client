@@ -64,7 +64,7 @@ body
 
 #SearchTab,
 #RecipesTab,
-.IngredientsTab
+#IngredientsTab
 {
     margin-left: 430px;
     margin-top: 80px;
@@ -199,7 +199,7 @@ body
     text-align: center;
 }
 
-.IngredientsTable table
+.IngredientsTable Table
 {
     text-align: right;
     width: 100%; 
@@ -280,12 +280,53 @@ input
     border: outset; 
 }
 
+.IngredientsTable td
+{
+    width: 90%;
+}
+
+label
+{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.IngredientsTable label
+{
+    border-radius: 80px 80px 80px 80px; 
+    border: none;
+    margin: 5px 0px 5px 0px;
+    background-color: white;
+    text-align: center;
+}
+
+.IngredientsTable label:hover
+{
+    border: outset; 
+}
+
+.IngredientName,
 .RecipeName
 {
     width: 50%; 
     height: 30px;
     margin-bottom: 10px;
     margin-top: 20px;
+}
+
+.Add
+{
+    background-color: #4FB3FF;
+    color: white;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 30px 30px 30px 30px; 
+    border-style: none;
+}
+
+.Add:hover
+{
+    border-style: outset;
 }
 
 #InstructionsTextArea
