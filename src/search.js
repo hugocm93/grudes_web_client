@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { bind } from "./utils";
 import { IngredientsTable } from "./ingredients";
 import { get_recipes_impl, RecipesTable, RecipeDisplay } from "./recipes";
@@ -20,7 +20,7 @@ export function SearchTab()
     }
 
     function get_selected_recipe(name)
-    { return recipes.find((recipe) => (recipe.name == name)); }
+    { return recipes.find((recipe) => (recipe.name === name)); }
 
     return (
         <div id="SearchTab">
