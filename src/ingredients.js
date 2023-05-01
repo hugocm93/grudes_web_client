@@ -16,7 +16,8 @@ async function get_ingredients_impl()
         method: "get",
     })
     .then((response) => response.json())
-    .then((data) => {
+    .then((data) =>
+    {
         if(data.ingredients)
         {
             data.ingredients.forEach((recipe) => { recipe.id = uuidv4(); });
@@ -30,8 +31,10 @@ async function get_ingredients_impl()
 
 export function IngredientsTable({title, ingredients, setIngredients})
 {
-    function add_ingredient_item() {
-        const newIngredient = {
+    function add_ingredient_item()
+    {
+        const newIngredient =
+        {
             name: "",
             id: uuidv4()
         };
@@ -46,7 +49,8 @@ export function IngredientsTable({title, ingredients, setIngredients})
     const columns = [
         {
             name: title,
-            get: (row) => {
+            get: (row) =>
+            {
                 return (
                     <input
                         type="text"
@@ -58,7 +62,8 @@ export function IngredientsTable({title, ingredients, setIngredients})
         },
         {
             name: "",
-            get: (row) => {
+            get: (row) =>
+            {
                 return (
                     <button className = "RemoveIngredientBtn" onClick = {() => {remove_ingredient(row.id)}}> - </button>
                 );
@@ -80,13 +85,15 @@ export function IngredientsArea()
     const [substitutes, setSubstitutes] = useState([]);
     const [ingredients, setIngredients] = useState([]);
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         get_ingredients_impl().then((ingredients) => (setIngredients(ingredients)));
     }, []);
 
     async function add_ingredient()
     {
-        const ingredient = {
+        const ingredient =
+        {
             name: name,
             substitutes: substitutes.map(substitute => substitute.name)
         };
@@ -113,13 +120,16 @@ export function IngredientsArea()
                 get_ingredients_impl().then((ingredients) => (setIngredients(ingredients)));
             }
         })
-        .catch((error) => {
+        .catch((error) =>
+        {
             console.error("Error:", error)
         });
     }
 
-    function add_substitute_item() {
-        const newSubstitute = {
+    function add_substitute_item()
+    {
+        const newSubstitute =
+        {
             name: "ingrediente substituto",
             id: uuidv4()
         };
@@ -144,7 +154,8 @@ export function IngredientsArea()
             method: "delete",
         })
         .then((response) => response.json())
-        .then((data) => {
+        .then((data) =>
+        {
             get_ingredients_impl().then((ingredients) => (setIngredients(ingredients)));
         })
         .catch((error) => {console.error("Error:", error)});
@@ -157,7 +168,8 @@ export function IngredientsArea()
         },
         {
             name: "",
-            get: (row) => {
+            get: (row) =>
+            {
                 return (
                     <button className = "RemoveIngredientBtn" onClick = {() => {remove_ingredient(row.id)}}> - </button>
                 );
@@ -172,7 +184,8 @@ export function IngredientsArea()
         {
             setName(ingredient.name);
 
-            setSubstitutes(ingredient.substitutes.map((substitute) => {
+            setSubstitutes(ingredient.substitutes.map((substitute) =>
+            {
                 return {name: substitute, id: uuidv4()};
             }));
         }

@@ -17,6 +17,7 @@ export function to_form_data(obj)
     return formData;
 }
 
-export function bind(setter) {
+export function bind(setter)
+{
     return (event) => { setter(event.target.value); }
 }

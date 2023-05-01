@@ -11,7 +11,8 @@ export async function get_recipes_impl(name, ingredients)
 
     url_ = url_ + `?${new URLSearchParams({name: name}).toString()}`;
 
-    ingredients.forEach((ingredient) => {
+    ingredients.forEach((ingredient) =>
+    {
         if(ingredient.name.length !== 0 )
             url_ = url_ + `&${new URLSearchParams({ingredients: ingredient.name}).toString()}`
     });
@@ -21,7 +22,8 @@ export async function get_recipes_impl(name, ingredients)
         method: "get",
     })
     .then((response) => response.json())
-    .then((data) => {
+    .then((data) =>
+    {
         if(data.recipes)
         {
             data.recipes.forEach((recipe) => { recipe.id = uuidv4(); });
@@ -78,7 +80,8 @@ export function RecipesTable({recipes, setRecipes, selectRecipe})
             method: "delete",
         })
         .then((response) => response.json())
-        .then((data) => {
+        .then((data) =>
+        {
             setRecipes(recipes.toSpliced(idx, 1)); 
         })
         .catch((error) => {console.error("Error:", error)});
@@ -87,7 +90,8 @@ export function RecipesTable({recipes, setRecipes, selectRecipe})
     const columns = [
         {
             name: "Receitas",
-            get: (row) => {
+            get: (row) =>
+            {
                 return (
                     <label> {row.name} </label>
                 );
@@ -95,7 +99,8 @@ export function RecipesTable({recipes, setRecipes, selectRecipe})
         },
         {
             name: "",
-            get: (row) => {
+            get: (row) =>
+            {
                 return (
                     <button className = "RemoveRecipeBtn" onClick = {() => {remove_recipe(row.id)}}> - </button>
                 );
@@ -120,13 +125,15 @@ function RecipesArea()
     const [instructions, setInstructions] = useState("");
     const [recipes, setRecipes] = useState([]);
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         get_recipes_impl("", []).then((recipes) => { setRecipes(recipes); });
     }, []);
 
     async function add_recipe()
     {
-        const recipe = {
+        const recipe =
+        {
             name: name,
             instructions: instructions,
             ingredients: ingredients.map((ingredient) => (ingredient.name)),
@@ -139,10 +146,12 @@ function RecipesArea()
             method: "post",
             body: to_form_data(recipe)
         })
-        .then((response) => {
+        .then((response) =>
+        {
             return response.json().then((json) => { return {status: response.status, json: json}; });
         })
-        .then((response) => {
+        .then((response) =>
+        {
             if(response.status !== 200)
             {
                 window.alert("Erro: " + response.json.message);
@@ -159,8 +168,10 @@ function RecipesArea()
         .catch((error) => {console.error("Error:", error)});
     }
 
-    function add_ingredient_item() {
-        const newIngredient = {
+    function add_ingredient_item()
+    {
+        const newIngredient =
+        {
             name: "ingrediente",
             quantity: 0,
             unit: "xícara",
@@ -177,7 +188,8 @@ function RecipesArea()
     const columns = [
         {
             name: "Ingrediente",
-            get: (row) => {
+            get: (row) =>
+            {
                 return (
                     <input
                         type="text"
@@ -189,7 +201,8 @@ function RecipesArea()
         },
         {
             name: "Quantidade",
-            get: (row) => {
+            get: (row) =>
+            {
                 return (
                     <input
                         id = "Quantity"
@@ -216,7 +229,8 @@ function RecipesArea()
         },
         {
             name: "",
-            get: (row) => {
+            get: (row) =>
+            {
                 return (
                     <button className = "RemoveIngredientBtn" onClick = {() => {remove_ingredient(row.id)}}> - </button>
                 );
@@ -231,13 +245,15 @@ function RecipesArea()
         {
             if(recipes.length !== 0)
                 recipe = recipes.at(0);
-        }).then(() => {
+        }).then(() =>
+        {
             if(recipe)
             {
                 setName(recipe.name);
                 setInstructions(recipe.instructions);
 
-                recipe.ingredients.forEach((ingredient) => {
+                recipe.ingredients.forEach((ingredient) =>
+                {
                     ingredient.name = ingredient.ingredient;
                     ingredient.id = uuidv4();
                 });
