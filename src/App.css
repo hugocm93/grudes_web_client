@@ -1,5 +1,4 @@
 *{
-    #border-style: solid;
     font-family: "Great Vibes";
     font-size: 20px;
 }
@@ -75,23 +74,6 @@ body
     margin-top: 60px;
 }
 
-.container { 
-  position: relative;
-}
-
-.vertical-center {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-
-.SearchBtnDiv
-{
-    text-align: center;
-}
-
 #SearchBtn:hover
 {
     border: outset; 
@@ -108,11 +90,6 @@ body
 {
     display: flex;
     text-align: center;
-}
-
-.SearchFields
-{
-    width: 400px;
 }
 
 .AddIngredientBtn:hover
@@ -250,17 +227,6 @@ input
     margin: 5px 0px 5px 0px;
     text-align: center;
 }
-
-/*.RecipesTable
-{
-    width: 400px;
-    text-align: left;
-    border: solid;
-    border-radius: 30px 30px 30px 30px; 
-    padding: 25px 25px 25px 25px; 
-    border-color: lightyellow;
-    border-width: 2px;
-}*/
 
 .RecipesTable table
 {
