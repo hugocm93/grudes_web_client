@@ -56,15 +56,6 @@ export function RecipeDisplay({selected, find_recipe})
     );
 }
 
-export function RecipesTab()
-{
-    return (
-        <div id = "RecipesTab">
-            <RecipesArea />
-        </div>
-    );
-}
-
 export function RecipesTable({recipes, setRecipes, selectRecipe})
 {
     function remove_recipe(id)
@@ -118,7 +109,7 @@ export function RecipesTable({recipes, setRecipes, selectRecipe})
     );
 }
 
-function RecipesArea()
+export function RecipesTab()
 {
     const [name, setName] = useState("");
     const [ingredients, setIngredients] = useState([]);
@@ -263,7 +254,7 @@ function RecipesArea()
     }
 
     return (
-        <div>
+        <div id = "RecipesTab">
             <div className = "center">
                 <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {show_recipe} />
                 <input className = "RecipeName" type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>

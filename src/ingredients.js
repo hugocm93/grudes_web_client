@@ -79,7 +79,7 @@ export function IngredientsTable({title, ingredients, setIngredients})
     );
 }
 
-export function IngredientsArea()
+export function IngredientsTab()
 {
     const [name, setName] = useState("");
     const [substitutes, setSubstitutes] = useState([]);
@@ -200,24 +200,17 @@ export function IngredientsArea()
     { show_ingredient(event.target.textContent.trim()); }
 
     return (
-        <div className = "center">
-            <div className = "IngredientsTable">
-                <Table columns = {columns} rows = {ingredients} onClick = {table_clicked}/>
-            </div>
-            <div>
-                <input className = "IngredientName" type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>
-                <IngredientsTable title = "Substitutos" ingredients = {substitutes} setIngredients = {setSubstitutes}/>
-            </div>
-            <button className = "Add" onClick={add_ingredient}> Cadastrar </button>
-        </div>
-    );
-}
-
-export function IngredientsTab()
-{
-    return (
         <div id = "IngredientsTab">
-            <IngredientsArea />
+            <div className = "center">
+                <div className = "IngredientsTable">
+                    <Table columns = {columns} rows = {ingredients} onClick = {table_clicked}/>
+                </div>
+                <div>
+                    <input className = "IngredientName" type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>
+                    <IngredientsTable title = "Substitutos" ingredients = {substitutes} setIngredients = {setSubstitutes}/>
+                </div>
+                <button className = "Add" onClick={add_ingredient}> Cadastrar </button>
+            </div>
         </div>
     );
 }
