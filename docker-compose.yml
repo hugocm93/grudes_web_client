@@ -1,0 +1,17 @@
+services:
+  grudes_api:
+    build:
+      context: https://github.com/hugocm93/grudes_api.git#main
+      target: prod
+    image: grudes_api 
+    ports:
+      - "5001:5001"
+  grudes_web_client:
+    build:
+      context: .
+      target: prod
+    image: grudes_web_client 
+    depends_on:
+      - grudes_api
+    ports:
+      - "3000:3000"

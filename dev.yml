@@ -1,0 +1,6 @@
+services:
+  grudes_web_client:
+    build:
+      target: dev
+    volumes:
+      - .:/app
