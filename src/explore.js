@@ -5,14 +5,36 @@ import { RecipesTable, RecipeDisplay } from "./recipes";
 
 var url = "https://www.themealdb.com/api/json/v1/1/"
 
-export function convert_to_recipe(meal)
+function recipe_from_id(id)
+{
+    var url_ = url + "lookup.php" + `?${new URLSearchParams({i: id}).toString()}`;
+    
+    return fetch(url_,
+    {
+        method: "get",
+    })
+    .then((response) =>
+    {
+        return response.json();
+    })
+    .then((data) =>
+    {
+        return convert_to_recipe(data.meals.at(0));
+    })
+    .catch((error) =>
+    {
+        console.error("Error:", error)
+    });
+}
+
+function convert_to_recipe(meal)
 {
     const maxIngredients = 21;
     const ingredients = [];
     for(let i = 1; i < maxIngredients; i++)
     {
         const name = meal["strIngredient" + i];
-        if(name.length !== 0)
+        if(name !== null && name.length !== 0)
         {
             const measure = meal["strMeasure" + i].split(' ');
             let unit = ""; 
@@ -29,36 +51,65 @@ export function convert_to_recipe(meal)
     return {name: meal.strMeal, ingredients: ingredients, instructions: meal.strInstructions};
 }
 
-export async function get_recipes_impl(name, ingredients)
+async function get(url, callback)
 {
-    var url_ = url + "/search.php";
-
-    if(name.length !== 0)
-        url_ = url_ + `?${new URLSearchParams({s: name}).toString()}`;
-    else
-        url_ = "" 
-
-    //ingredients.forEach((ingredient) =>
-    //{
-    //    if(ingredient.name.length !== 0 )
-    //        url_ = url_ + `&${new URLSearchParams({ingredients: ingredient.name}).toString()}`
-    //});
-
-    return fetch(url_,
+    return fetch(url,
     {
         method: "get",
     })
-    .then((response) => response.json())
+    .then((response) =>
+    {
+        return response.json();
+    })
     .then((data) =>
     {
-        if(data.meals)
-        {
-            return data.meals.map(convert_to_recipe);
-        }
-        else
-            return [];
+        return callback(data);
     })
-    .catch((error) => {console.error("Error:", error)});
+    .catch((error) =>
+    {
+        console.error("Error:", error)
+        window.alert("Não foram encontrados resultados.");
+        return [];
+    });
+}
+
+async function get_recipes_impl(name, ingredients)
+{
+    var url_ = ""
+
+    if(name.length !== 0 && ingredients.length == 0)
+    {
+        url_ = url + "search.php" + `?${new URLSearchParams({s: name}).toString()}`;
+
+        return get(url_, (data) => {
+            if(data.meals)
+                return data.meals.map(convert_to_recipe);
+            else
+                return [];
+        });
+    }
+    else if(name.length == 0 && ingredients.length !== 0)
+    {
+        ingredients.forEach((ingredient) =>
+        {
+            if(ingredient.hasOwnProperty('name') && (ingredient.name.length !== 0))
+                url_ = url + "filter.php"  + `?${new URLSearchParams({i: ingredient.name}).toString()}`;
+        });
+
+        return get(url_, (data) => {
+            const ids = data.meals.map((meal) => meal.idMeal);
+            return Promise.all(ids.map(id => recipe_from_id(id)))
+                .catch(error =>
+                {
+                    console.log(error);
+                });
+        });
+    }
+    else
+    {
+        window.alert("Preencha o nome ou o ingrediente principal.");
+        return Promise.resolve([]);
+    }
 }
 
 export function ExploreTab()
