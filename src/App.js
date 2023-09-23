@@ -3,6 +3,7 @@ import Logo from "./logo.png";
 import { IngredientsTab } from "./ingredients";
 import { RecipesTab } from "./recipes";
 import { SearchTab } from "./search";
+import { ExploreTab } from "./explore";
 import { useState } from "react";
 
 function MenuItem({name, isActive, setActive})
@@ -39,6 +40,11 @@ function Sidebar({currentIndex, setCurrentIndex})
                     isActive = {currentIndex === 2}
                     setActive = {() => { setCurrentIndex(2); }}
                 />
+                <MenuItem
+                    name = "Explorar"
+                    isActive = {currentIndex === 3}
+                    setActive = {() => { setCurrentIndex(3); }}
+                />
             </header>
         </div>
     );
@@ -52,6 +58,8 @@ function FormArea({currentIndex})
         return (<RecipesTab />);
     else if (currentIndex === 2)
         return (<IngredientsTab />);
+    else if (currentIndex === 3)
+        return (<ExploreTab />);
 }
 
 function App()
