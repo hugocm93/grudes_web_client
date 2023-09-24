@@ -153,9 +153,11 @@ export function ExploreTab()
             <div className = "center">
                 <button id = "ExploreBtn" onClick = {get_recipes} > &#x1F50D; </button>
             </div>
-            <div id = "ExploreResultDiv" className = "center">
-                <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {setSelected}/>
-                <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
+            <div className = "center">
+                <div id = "ExploreResultDiv" className = "Row">
+                    <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {setSelected}/>
+                    <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
+                </div>
             </div>
         </div>
     );

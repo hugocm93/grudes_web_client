@@ -167,6 +167,12 @@ body
 {
     background-color: lightyellow;
     border-color: #FF905C;
+    width: 50%;
+}
+
+.RecipesTable
+{
+    width: 50%;
 }
 
 .Description
