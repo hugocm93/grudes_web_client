@@ -2,8 +2,6 @@
 
 Projeto de avaliação da primeira sprint do curso de Pós-graduação da PUC-Rio em Engenharia de Software.
 
-Esta aplicação utiliza os serviços do [Grudes API](https://github.com/hugocm93/grudes_api). 
-
 ---
 ## Requisitos 
 * Sistema Operacional Unix.
@@ -29,3 +27,8 @@ O site apresenta um menu lateral com 4 itens de Menu: Busca, Receitas, Ingredien
 * Receitas: Área de cadastro de novas receitas e edição de receitas já cadastradas. Para cadastrar uma nova receita, preencher o formulário e clicar no botão cadastrar. Para editar uma receita, selecioná-la na lista, alterar os campos e clicar em Cadastrar.
 * Ingredientes: Área de cadastro de ingredientes e ingredientes substitutos. Para cadastrar um novo ingrediente, preencher o formulário e clicar em Cadastrar. Para editar um ingrediente, selecionar um ingrediente da lista, alterar os campos e clicar em Cadastrar.
 * Explorar: Área de busca de novas receitas na internet. Nesta área, a busca é efetuada em provedor de receitas. A busca pode ser feita por nome ou por ingrediente principal. Ao encontrar uma receita desejada, é possível salvá-la na sua lista de receitas pessoais clicando no botão Salvar.
+
+---
+## Serviços utilizados:
+* [Grudes API](https://github.com/hugocm93/grudes_api) para gerenciamento da lista de receitas pessoais. Foi implementada por mim para o curso de Pós-graduação da PUC-Rio em Engenharia de Software.
+* [TheMealBD](https://www.themealdb.com/api.php) para procurar novas receitas. Esta API é gratuita para fins educacionais. Nenhuma autenticação é necessária pois só foram usadas rotas presentes na versão gratuita. Rotas utilizadas: www.themealdb.com/api/json/v1/1/search.php, www.themealdb.com/api/json/v1/1/lookup.php, www.themealdb.com/api/json/v1/1/filter.php.
