@@ -3,7 +3,6 @@
 echo "Instalando..."
 npm install
 
-
 if [ "$1" == "debug" ]; then
 	echo "Iniciando debug..."
 	npm start 

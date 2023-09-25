@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { bind } from "./utils";
 import { IngredientsTable } from "./ingredients";
-import { RecipesTable, RecipeDisplay } from "./recipes";
+import { RecipesTable, RecipeDisplay, add_recipe} from "./recipes";
+import { numericQuantity } from 'numeric-quantity';
 
 var url = "https://www.themealdb.com/api/json/v1/1/"
 
@@ -38,11 +39,13 @@ function convert_to_recipe(meal)
         {
             const measure = meal["strMeasure" + i].split(' ');
             let unit = ""; 
-            let quantity = measure[0];
+            let quantity = numericQuantity(measure[0]);
+            if(isNaN(quantity))
+                quantity = 1;
             if(measure.length == 2)
                 unit = measure[1];
     
-            ingredients.push({ingredient: name, quantity: quantity, unit: unit});
+            ingredients.push({ingredient: name, name: name, quantity: quantity, unit: unit});
         }
         else
             break;
@@ -131,6 +134,20 @@ export function ExploreTab()
     function get_selected_recipe(name)
     { return recipes.find((recipe) => (recipe.name === name)); }
 
+    function _add_recipe()
+    {
+        const recipe = get_selected_recipe(selected);
+        add_recipe(recipe.name, recipe.instructions, recipe.ingredients)
+            .then((response) =>
+            {
+                if(response.status === 200)
+                {
+                    setName("");
+                    window.alert("Receita inserida com sucesso.");
+                }
+            });
+    }
+
     return (
         <div id="ExploreTab">
             <div className = "Row">
@@ -159,6 +176,7 @@ export function ExploreTab()
                     <RecipeDisplay selected = {selected} find_recipe = {get_selected_recipe}/>
                 </div>
             </div>
+            <button className = "Add" onClick={_add_recipe}> Salvar </button>
         </div>
     );
 }

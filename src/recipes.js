@@ -5,6 +5,36 @@ import { to_form_data, bind } from "./utils";
 import { ingredient_to_string } from "./ingredients";
 import { url } from "./common";
 
+export async function add_recipe(name, instructions, ingredients)
+{
+    const recipe =
+    {
+        name: name,
+        instructions: instructions,
+        ingredients: ingredients.map((ingredient) => (ingredient.name)),
+        quantities: ingredients.map((ingredient) => (ingredient.quantity)),
+        units: ingredients.map((ingredient) => (ingredient.unit))
+    };
+
+    return fetch(url + "/recipe",
+    {
+        method: "post",
+        body: to_form_data(recipe)
+    })
+    .then((response) =>
+    {
+        return response.json().then((json) => { return {status: response.status, json: json}; });
+    })
+    .then((response) =>
+    {
+        if(response.status !== 200)
+            window.alert("Erro: " + response.json.message);
+
+        return response;
+    })
+    .catch((error) => {console.error("Error:", error)});
+}
+
 export async function get_recipes_impl(name, ingredients)
 {
     var url_ = url + "/recipes";
@@ -121,42 +151,20 @@ export function RecipesTab()
         get_recipes_impl("", []).then((recipes) => { setRecipes(recipes); });
     }, []);
 
-    async function add_recipe()
+    function _add_recipe()
     {
-        const recipe =
-        {
-            name: name,
-            instructions: instructions,
-            ingredients: ingredients.map((ingredient) => (ingredient.name)),
-            quantities: ingredients.map((ingredient) => (ingredient.quantity)),
-            units: ingredients.map((ingredient) => (ingredient.unit))
-        };
-
-        fetch(url + "/recipe",
-        {
-            method: "post",
-            body: to_form_data(recipe)
-        })
-        .then((response) =>
-        {
-            return response.json().then((json) => { return {status: response.status, json: json}; });
-        })
-        .then((response) =>
-        {
-            if(response.status !== 200)
+        add_recipe(name, instructions, ingredients)
+            .then((response) =>
             {
-                window.alert("Erro: " + response.json.message);
-            }
-            else
-            {
-                setName("");
-                setIngredients([]);
-                setInstructions([]);
+                if(response.status === 200)
+                {
+                    setName("");
+                    setIngredients([]);
+                    setInstructions([]);
 
-                get_recipes_impl("", []).then((recipes) => {setRecipes(recipes); });
-            }
-        })
-        .catch((error) => {console.error("Error:", error)});
+                    get_recipes_impl("", []).then((recipes) => {setRecipes(recipes); });
+                }
+            });
     }
 
     function add_ingredient_item()
@@ -270,7 +278,7 @@ export function RecipesTab()
                     <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> + </button>
                 </div>
             </div>
-            <button className = "Add" onClick={add_recipe}> Cadastrar </button>
+            <button className = "Add" onClick={_add_recipe}> Cadastrar </button>
         </div>
     );
 }
