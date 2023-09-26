@@ -12,7 +12,7 @@ export function SearchTab()
 
     function get_recipes()
     {
-        get_recipes_impl(name.toLowerCase().trim(), ingredients).then((recipes) => {
+        get_recipes_impl(name.trim(), ingredients).then((recipes) => {
             setRecipes(recipes);
             if(recipes.length !== 0)
                 setSelected(recipes.at(0).name);
