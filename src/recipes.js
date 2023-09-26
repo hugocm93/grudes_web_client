@@ -5,6 +5,39 @@ import { to_form_data, bind } from "./utils";
 import { ingredient_to_string } from "./ingredients";
 import { url } from "./common";
 
+export async function update_recipe(id, name, instructions, ingredients)
+{
+    const recipe =
+    {
+        name: name,
+        instructions: instructions,
+        ingredients: ingredients.map((ingredient) => (ingredient.name)),
+        quantities: ingredients.map((ingredient) => (ingredient.quantity)),
+        units: ingredients.map((ingredient) => (ingredient.unit))
+    };
+
+    const method = "put";
+    const route = url + "/recipe/" + id;
+
+    return fetch(route,
+    {
+        method: method,
+        body: to_form_data(recipe)
+    })
+    .then((response) =>
+    {
+        return response.json().then((json) => { return {status: response.status, json: json}; });
+    })
+    .then((response) =>
+    {
+        if(response.status !== 200)
+            window.alert("Erro: " + response.json.message);
+
+        return response;
+    })
+    .catch((error) => {console.error("Error:", error)});
+}
+
 export async function add_recipe(name, instructions, ingredients)
 {
     const recipe =
@@ -16,9 +49,12 @@ export async function add_recipe(name, instructions, ingredients)
         units: ingredients.map((ingredient) => (ingredient.unit))
     };
 
-    return fetch(url + "/recipe",
+    const route = url + "/recipe";
+    const method = "post";
+
+    return fetch(route,
     {
-        method: "post",
+        method: method,
         body: to_form_data(recipe)
     })
     .then((response) =>
@@ -55,10 +91,7 @@ export async function get_recipes_impl(name, ingredients)
     .then((data) =>
     {
         if(data.recipes)
-        {
-            data.recipes.forEach((recipe) => { recipe.id = uuidv4(); });
             return data.recipes;
-        }
         else
             return [];
     })
@@ -86,7 +119,7 @@ export function RecipeDisplay({selected, find_recipe})
     );
 }
 
-export function RecipesTable({recipes, setRecipes, selectRecipe})
+export function RecipesTable({setId, recipes, setRecipes, selectRecipe})
 {
     function remove_recipe(id)
     {
@@ -104,6 +137,8 @@ export function RecipesTable({recipes, setRecipes, selectRecipe})
         .then((data) =>
         {
             setRecipes(recipes.toSpliced(idx, 1)); 
+            setId("");
+            window.alert("Receita removida com sucesso.");
         })
         .catch((error) => {console.error("Error:", error)});
     }
@@ -142,6 +177,7 @@ export function RecipesTable({recipes, setRecipes, selectRecipe})
 export function RecipesTab()
 {
     const [name, setName] = useState("");
+    const [id, setId] = useState("");
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState("");
     const [recipes, setRecipes] = useState([]);
@@ -158,11 +194,21 @@ export function RecipesTab()
             {
                 if(response.status === 200)
                 {
-                    setName("");
-                    setIngredients([]);
-                    setInstructions([]);
-
                     get_recipes_impl("", []).then((recipes) => {setRecipes(recipes); });
+                    window.alert("Receita inserida com sucesso.");
+                }
+            });
+    }
+
+    function _update_recipe()
+    {
+        update_recipe(id, name, instructions, ingredients)
+            .then((response) =>
+            {
+                if(response.status === 200)
+                {
+                    get_recipes_impl("", []).then((recipes) => {setRecipes(recipes); });
+                    window.alert("Receita atualizada com sucesso.");
                 }
             });
     }
@@ -249,6 +295,7 @@ export function RecipesTab()
             if(recipe)
             {
                 setName(recipe.name);
+                setId(recipe.id);
                 setInstructions(recipe.instructions);
 
                 recipe.ingredients.forEach((ingredient) =>
@@ -264,7 +311,7 @@ export function RecipesTab()
     return (
         <div id = "RecipesTab">
             <div className = "center">
-                <RecipesTable recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {show_recipe} />
+                <RecipesTable setId = {setId} recipes = {recipes} setRecipes = {setRecipes} selectRecipe = {show_recipe} />
                 <input className = "RecipeName" type = "text" placeholder = "  Nome" value = {name} onChange = {bind(setName)}></input>
                 <textarea
                     id = "InstructionsTextArea"
@@ -278,7 +325,8 @@ export function RecipesTab()
                     <button className = "AddIngredientBtn" onClick = {add_ingredient_item}> + </button>
                 </div>
             </div>
-            <button className = "Add" onClick={_add_recipe}> Cadastrar </button>
+            { id === "" && <button className = "Add" onClick={_add_recipe}> Cadastrar </button> }
+            { id !== "" && <button className = "Add" onClick={_update_recipe}> Atualizar </button> }
         </div>
     );
 }
