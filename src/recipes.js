@@ -5,6 +5,11 @@ import { to_form_data, bind } from "./utils";
 import { ingredient_to_string } from "./ingredients";
 import { url } from "./common";
 
+function capitalizeFirstLetter(string)
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export async function update_recipe(id, name, instructions, ingredients)
 {
     const recipe =
@@ -71,6 +76,24 @@ export async function add_recipe(name, instructions, ingredients)
     .catch((error) => {console.error("Error:", error)});
 }
 
+export async function get_recipe_cuisine(recipe)
+{
+    var url_ = url + "/recipe/cuisine?";
+
+    recipe.ingredients.forEach((ingredient) =>
+    {
+        if(ingredient.ingredient.length !== 0 )
+        {
+            url_ = url_ + `&${new URLSearchParams({ingredients: ingredient.ingredient}).toString()}`
+        }
+    });
+
+    return fetch(url_, {method: "get"})
+        .then((response) => response.text())
+        .then((text) => capitalizeFirstLetter(text))
+        .catch((error) => {console.error("Error:", error)});
+}
+
 export async function get_recipes_impl(name, ingredients)
 {
     var url_ = url + "/recipes";
@@ -91,7 +114,21 @@ export async function get_recipes_impl(name, ingredients)
     .then((data) =>
     {
         if(data.recipes)
-            return data.recipes;
+        {
+            var promises = []
+            data.recipes.forEach((recipe) =>
+            {
+                promises.push(get_recipe_cuisine(recipe).then((cuisine) =>
+                {
+                    recipe.cuisine = cuisine; 
+                }));
+            });
+
+            return Promise.all(promises).then(() =>
+            {
+                return data.recipes;
+            });
+        }
         else
             return [];
     })
@@ -106,6 +143,10 @@ export function RecipeDisplay({selected, find_recipe})
         <div className="RecipeDisplay">
             <div>
                 <h1>{recipe ? recipe.name : ""}</h1>
+            </div>
+            <div className = "Description">
+                <label>Gastronomia:</label>
+                <p>{recipe ? recipe.cuisine : ""}</p>
             </div>
             <div className = "Description">
                 <label id = "IngredientTitle">Ingredientes:</label>

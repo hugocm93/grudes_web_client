@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { bind } from "./utils";
 import { IngredientsTable } from "./ingredients";
-import { RecipesTable, RecipeDisplay, add_recipe} from "./recipes";
+import { RecipesTable, RecipeDisplay, add_recipe, get_recipe_cuisine} from "./recipes";
 import { numericQuantity } from 'numeric-quantity';
 
 var url = "https://www.themealdb.com/api/json/v1/1/"
@@ -20,7 +20,13 @@ function recipe_from_id(id)
     })
     .then((data) =>
     {
-        return convert_to_recipe(data.meals.at(0));
+        var recipe = convert_to_recipe(data.meals.at(0));
+
+        return get_recipe_cuisine(recipe).then((cuisine) =>
+        {
+            recipe.cuisine = cuisine; 
+            return recipe;
+        });
     })
     .catch((error) =>
     {
